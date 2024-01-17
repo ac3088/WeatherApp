@@ -1,7 +1,6 @@
 A simple weather app made using React and Vite.
 
 Weather data taken from WeatherAPI [https://www.weatherapi.com/].
-
 # 
 
 # React + TypeScript + Vite
