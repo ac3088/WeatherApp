@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Container from '@mui/system/Container';
 import Grid from '@mui/system/Unstable_Grid';
@@ -29,56 +31,78 @@ const boxStyles = {
   margin: 'auto',
 };
 
+interface Background {
+  '--background-color': string,
+  '--background-image': string,
+  '--color': string,
+}
+const backgrounds: { [key: string]: Background } = {
+  clear: {
+    '--background-color': '#5ca0f2',
+    '--background-image': 'linear-gradient(315deg, #5ca0f2 0%, #f5f7f6 74%)',
+    '--color': 'black',
+  },
+  cloudy: {
+    '--background-color': 'rgb(162, 158, 158)',
+    '--background-image': 'linear-gradient(315deg, rgba(162, 158, 158, 1) 64%, rgba(118, 150, 158, 1) 90%)',
+    '--color': 'black',
+  }
+}
+
+function changeBackground(condition: string) {
+  const root = document.documentElement;
+  const theme: Background = backgrounds[condition];
+
+  for (const key in theme) {
+    root.style.setProperty(key, theme[key as keyof Background]);
+  }
+}
+
 function App() {
 
-  function updateTemperature(city: string) {
+  const [location, setLocation] = useState("");
+
+  function updateWeather(city: string) {
     const apiURL = `http://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`;
 
-    const tempDisplayContainer: any = document.getElementById('temp-display');
-    const extraInfoContainer: any = document.getElementById('extra-info-display');
+    function setElementContent(id: string, content: string) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.innerHTML = content;
+      }
+    }
 
-    const temperatureP: any = document.getElementById('temperature-p');
-    const conditionP: any = document.getElementById('condition-p');
-
-    const precipP: any = document.getElementById('precip-p');
-    const windP: any = document.getElementById('wind-p');
-    const humidityP: any = document.getElementById('humidity-p');
-    const feelsLikeP: any = document.getElementById('feelslike-p');
-    const uvP: any = document.getElementById('uv-p');
-    const visP: any = document.getElementById('vis-p');
+    function setElementVisibility(id: string, visibility: string) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.visibility = visibility;
+      }
+    }
 
     fetch(apiURL)
       .then(response => response.json())
       .then(data => {
-        temperatureP.innerHTML = `${data.current.temp_c}°C`;
-        conditionP.innerHTML = `${data.current.condition.text}`;
-
-        precipP.innerHTML = `Precipitation<br />${data.current.precip_mm}mm`;
-        windP.innerHTML = `Wind<br />${data.current.wind_kph}kph ${data.current.wind_dir}`;
-        humidityP.innerHTML = `Humidity<br />${data.current.humidity}%`;
-        feelsLikeP.innerHTML = `Feels Like<br />${data.current.feelslike_c}°C`;
-        uvP.innerHTML = `UV Index<br />${data.current.uv}`;
-        visP.innerHTML = `Visibility<br />${data.current.vis_km}km`;
-
-        tempDisplayContainer.style.visibility = "visible";
-        extraInfoContainer.style.visibility = "visible";
+        setElementContent('temperature-p', `${data.current.temp_c}°C`);
+        setElementContent('condition-p', `${data.current.condition.text}`);
+        setElementContent('precip-p', `Precipitation<br />${data.current.precip_mm}mm`);
+        setElementContent('wind-p', `Wind<br />${data.current.wind_kph}kph ${data.current.wind_dir}`);
+        setElementContent('humidity-p', `Humidity<br />${data.current.humidity}%`);
+        setElementContent('feelslike-p', `Feels Like<br />${data.current.feelslike_c}°C`);
+        setElementContent('uv-p', `UV Index<br />${data.current.uv}`);
+        setElementContent('vis-p', `Visibility<br />${data.current.vis_km}km`);
+        setElementVisibility('temp-display', 'visible');
+        setElementVisibility('extra-info-display', 'visible');
 
         console.log(data);
       });
-  }
-
-  // TODO: Replace this whole process with a useState hook
-  const search = () => {
-    const input: any = document.getElementById('location-input');
-    updateTemperature(input.value);
   }
 
   return (
     <>
       <Stack id="main-stack">
         <Container id="search-bar">
-          <TextField id="location-input" label="Location" variant="outlined" />
-          <IconButton onClick={() => search()}><TravelExploreIcon fontSize="large" /></IconButton>
+          <TextField id="location-input" label="Location" variant="outlined" onChange={event => setLocation(event.target.value)} />
+          <IconButton onClick={() => updateWeather(location)}><TravelExploreIcon fontSize="large" /></IconButton>
           {/* TODO: Implement switch for changing between Celcius and Fahrenheit (and miles and km) */}
         </Container>
 
