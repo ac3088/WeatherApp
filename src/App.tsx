@@ -21,8 +21,7 @@ import './App.css'
 
 const API_KEY: string = '25034e1902ed4c92981114031241501';
 
-const boxStyles = {
-  borderColor: 'black',
+var boxStyles = {
   border: 1,
   borderRadius: '16px',
   height: '12rem',
@@ -37,14 +36,19 @@ interface Background {
   '--color': string,
 }
 const backgrounds: { [key: string]: Background } = {
-  clear: {
-    '--background-color': '#5ca0f2',
-    '--background-image': 'linear-gradient(315deg, #5ca0f2 0%, #f5f7f6 74%)',
+  day: {
+    '--background-color': 'rgb(92,160,242)',
+    '--background-image': 'linear-gradient(315deg, rgba(92,160,242,1) 0%, rgba(245,247,246,1) 74%)',
     '--color': 'black',
   },
-  cloudy: {
-    '--background-color': 'rgb(162, 158, 158)',
-    '--background-image': 'linear-gradient(315deg, rgba(162, 158, 158, 1) 64%, rgba(118, 150, 158, 1) 90%)',
+  morning: {
+    '--background-color': 'rgb(150,197,255)',
+    '--background-image': 'linear-gradient(315deg, rgba(150,197,255,1) 16%, rgba(235,244,188,1) 75%)',
+    '--color': 'black',
+  },
+  night: {
+    '--background-color': 'rgb(0,25,42)',
+    '--background-image': 'linear-gradient(315deg, rgba(0,25,42,1) 0%, rgba(245,247,246,1) 85%)',
     '--color': 'black',
   }
 }
@@ -93,10 +97,23 @@ function App() {
         setElementVisibility('temp-display', 'visible');
         setElementVisibility('extra-info-display', 'visible');
 
+        const localtime = data.location.localtime.split(' ');
+        const hour = localtime[1].split(':')[0];
+        if (hour <= 6 || hour >= 20) {
+          changeBackground('night');
+        }
+        else if (hour > 6 && hour < 10) {
+          changeBackground('morning');
+        }
+        else {
+          changeBackground('day');
+        }
+
         console.log(data);
       });
   }
 
+  // TODO: Localtime somewhere?
   return (
     <>
       <Stack id="main-stack">

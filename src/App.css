@@ -1,6 +1,6 @@
 :root {
-  --background-color: #5ca0f2;
-  --background-image: linear-gradient(315deg, #5ca0f2 0%, #f5f7f6 74%);
+  --background-color: rgb(92, 160, 242);
+  --background-image: linear-gradient(315deg, rgba(92, 160, 242, 1) 0%, rgba(245, 247, 246, 1) 74%);
   --color: black;
 
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
